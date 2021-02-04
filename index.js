@@ -1,18 +1,19 @@
 const puppeteer = require('puppeteer');
 const Sheet = require('./sheet');
 
-const url = 'https://old.reddit.com/r/learnprogramming/comments/4q6tae/i_highly_recommend_harvards_free_online_2016_cs50/';
-
 (async function () {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
-    await page.goto(url);
 
     const sheet = new Sheet();
     await sheet.load();
-    // create sheet with title
+
+    const urls = await sheet.getRows(0);
+    for (let url of urls) {
+        await page.goto(url.url);
+        // create sheet with title
     const title = await page.$eval('.title a', el => el.textContent);
-    const sheetIndex = await sheet.addSheet(title.slice(0, 99), ['points', 'text']); 
+    const sheetIndex = await sheet.addSheet(title.slice(0, 99), ['points', 'text']);
 
     // expand all comment threads
     let expandButtons = await page.$$('.morecomments');
@@ -50,6 +51,9 @@ const url = 'https://old.reddit.com/r/learnprogramming/comments/4q6tae/i_highly_
 
     // insert into google spreadsheet
     sheet.addRows(formattedComments, sheetIndex);
+    }
+
+    
 
     await browser.close();
 })()
