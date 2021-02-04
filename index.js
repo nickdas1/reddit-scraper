@@ -27,6 +27,7 @@ const Sheet = require('./sheet');
             }
         }
 
+        // create new sheet
         const sheetIndex = await sheet.addSheet(title, ['points', 'text']);
 
         // expand all comment threads
