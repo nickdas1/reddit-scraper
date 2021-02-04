@@ -34,7 +34,7 @@ const url = 'https://old.reddit.com/r/learnprogramming/comments/4q6tae/i_highly_
         // scrape text
         const rawText = await comment.$eval('.usertext-body', el => el.textContent).catch(err => console.error('no text'));
         if (points && rawText) {
-            // remove \n line breaks with regEx
+
             const text = rawText.replace(/\n/g, '');
             formattedComments.push({ points, text });
         }
